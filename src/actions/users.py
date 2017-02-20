@@ -5,8 +5,8 @@ from flask_login import current_user
 from src.models import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from src.helpers import generate_user_token, encode_user_token
-from flask import request
-
+from flask import request, jsonify
+from src.schemas.user_schema import UserSchema
 
 def login(attributes):
     attributes = attributes['user']
@@ -58,7 +58,8 @@ def get_current_user(attributes):
         emit('failed', {'error': 'User not authorized'})
         return False
 
-    emit('success', {'user': user.first_name})
+    schema = UserSchema()
+    emit('success', {'user': schema.dump(user).data})
 
 
 def _get_user(attributes):

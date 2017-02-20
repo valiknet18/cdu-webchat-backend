@@ -4,6 +4,7 @@ from flask import Flask
 from src import socketio
 from flask_migrate import Migrate
 from src.actions import login_manager
+from src.schemas import ma
 
 import src.api
 
@@ -14,5 +15,6 @@ Migrate(app, db)
 if __name__ == '__main__':
     db.init_app(app)
     login_manager.init_app(app)
+    ma.init_app(app)
     socketio.init_app(app)
     socketio.run(app)

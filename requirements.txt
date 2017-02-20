@@ -5,6 +5,7 @@ enum-compat==0.0.2
 eventlet==0.20.1
 Flask==0.12
 Flask-Login==0.4.0
+flask-marshmallow==0.7.0
 Flask-Migrate==2.0.3
 Flask-Script==2.0.5
 Flask-SocketIO==2.8.3
@@ -14,6 +15,8 @@ itsdangerous==0.24
 Jinja2==2.9.5
 Mako==1.0.6
 MarkupSafe==0.23
+marshmallow==2.12.2
+marshmallow-sqlalchemy==0.12.1
 packaging==16.8
 PyMySQL==0.7.10
 pyparsing==2.1.10
