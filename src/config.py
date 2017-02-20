@@ -11,3 +11,5 @@ class Config:
     @staticmethod
     def __init_application_config(app):
         app.config['SECRET_KEY'] = '85vyS5SL1KgNBAZ378W0MZaWxjr842sA'
+
+        app.config['REMEMBER_COOKIE_NAME'] = 'token'

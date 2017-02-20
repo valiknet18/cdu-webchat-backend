@@ -4,7 +4,8 @@ from flask_socketio import emit
 from flask_login import current_user
 from src.models import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from . import login_manager
+from src.helpers import generate_user_token, encode_user_token
+from flask import request
 
 
 def login(attributes):
@@ -13,16 +14,17 @@ def login(attributes):
     user = _get_user(attributes)
 
     if not user or not check_password_hash(user.password, attributes['password']):
-        emit('login_failed', {'error': 'Authorization error'}, namespace='/auth')
+        emit('login_failed', {'error': 'Authorization error'})
         return False
 
     if login_user(user, True):
-        emit('login_success', {'user': user.first_name}, namespace='/auth')
-    else:
-        emit('login_failed', {'error': 'User not authorized'}, namespace='/auth')
+        token = generate_user_token()
 
-def _get_user(attributes):
-    return User.query.filter(User.email == attributes['email']).first()
+        User.query.filter_by(id=user.id).update({'token': token})
+
+        emit('login_success', {'user': user.first_name, 'token': encode_user_token(token).decode('ascii')})
+    else:
+        emit('login_failed', {'error': 'User not authorized'})
 
 
 def registration(attributes):
@@ -39,26 +41,25 @@ def registration(attributes):
 
     try:
         db.session.add(user)
-        db.session.commit()
 
         emit('registration_success', {
             'user': user.first_name
-        }, namespace='/auth')
+        })
     except Exception as e:
         emit('registration_failed', {
             'error': str(e)
-        }, namespace='/auth')
+        })
+
 
 def get_current_user(attributes):
     user = current_user
 
     if not user.is_authenticated:
-        emit('failed', {'error': 'User not authorized'}, namespace='/auth')
+        emit('failed', {'error': 'User not authorized'})
         return False
 
-    emit('success', {'user': user.first_name}, namespace='/auth')
+    emit('success', {'user': user.first_name})
 
-@login_manager.user_loader
-def user_load(user_id):
-    return User.query.get(int(user_id))
 
+def _get_user(attributes):
+    return User.query.filter(User.email == attributes['email']).first()

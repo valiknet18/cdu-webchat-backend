@@ -18,5 +18,6 @@ class User(db.Model, UserMixin):
     is_super_admin = db.Column(db.BOOLEAN(), default=False)
     role = db.Column(db.Enum('teacher', 'student'))
     is_active = db.Column(db.BOOLEAN(), default=True)
+    token = db.Column(db.VARCHAR(255), nullable=True)
     # rooms = db.relationship('Room', secondary=rooms,
     #                         backref=db.backref('users', lazy='dynamic'))
