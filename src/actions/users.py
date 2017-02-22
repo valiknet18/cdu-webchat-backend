@@ -5,8 +5,10 @@ from flask_login import current_user
 from src.models import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from src.helpers import generate_user_token, encode_user_token
-from flask import request, jsonify
 from src.schemas.user_schema import UserSchema
+
+schema = UserSchema()
+
 
 def login(attributes):
     attributes = attributes['user']
@@ -21,14 +23,19 @@ def login(attributes):
         token = generate_user_token()
 
         User.query.filter_by(id=user.id).update({'token': token})
+        db.session.commit()
 
-        emit('login_success', {'user': user.first_name, 'token': encode_user_token(token).decode('ascii')})
+        emit('login_success', {
+            'user': schema.dump(user).data,
+            'token': encode_user_token(token).decode('ascii')
+        })
     else:
         emit('login_failed', {'error': 'User not authorized'})
 
 
 def registration(attributes):
     attributes = attributes['user']
+    token = generate_user_token()
 
     user = User(
         first_name=attributes['first_name'],
@@ -36,14 +43,19 @@ def registration(attributes):
         email=attributes['email'],
         username=attributes['username'],
         password=generate_password_hash(attributes['password']),
-        role='student'
+        role='student',
+        token=token
     )
 
     try:
         db.session.add(user)
+        db.session.commit()
+
+        login_user(user)
 
         emit('registration_success', {
-            'user': user.first_name
+            'user': schema.dump(user).data,
+            'token': encode_user_token(token).decode('ascii')
         })
     except Exception as e:
         emit('registration_failed', {
@@ -58,7 +70,6 @@ def get_current_user(attributes):
         emit('failed', {'error': 'User not authorized'})
         return False
 
-    schema = UserSchema()
     emit('success', {'user': schema.dump(user).data})
 
 
