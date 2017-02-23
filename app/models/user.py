@@ -1,10 +1,12 @@
-from . import db
+from app import db
+from app.models.room import Room
+
 from flask_login import UserMixin
 
-# rooms = db.Table('user_room',
-#     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-#     db.Column('room_id', db.Integer, db.ForeignKey('rooms.id'))
-# )
+user_room = db.Table('user_room',
+                     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+                     db.Column('room_id', db.Integer, db.ForeignKey('rooms.id'))
+                     )
 
 
 class User(db.Model, UserMixin):
@@ -19,5 +21,5 @@ class User(db.Model, UserMixin):
     role = db.Column(db.Enum('teacher', 'student'))
     is_active = db.Column(db.BOOLEAN(), default=True)
     token = db.Column(db.VARCHAR(255), nullable=True)
-    # rooms = db.relationship('Room', secondary=rooms,
-    #                         backref=db.backref('users', lazy='dynamic'))
+    rooms = db.relationship('Room', secondary=user_room,
+                                backref=db.backref('users', lazy='dynamic'))

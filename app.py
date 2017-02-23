@@ -1,20 +1,5 @@
-from src.config import Config
-from src.models import db
-from flask import Flask
-from src import socketio
-from flask_migrate import Migrate
-from src.actions import login_manager
-from src.schemas import ma
-
-import src.api
-
-app = Flask(__name__)
-Config(app)
-Migrate(app, db)
+from app import create_app, socketio
 
 if __name__ == '__main__':
-    db.init_app(app)
-    login_manager.init_app(app)
-    ma.init_app(app)
-    socketio.init_app(app)
+    app = create_app()
     socketio.run(app)

@@ -1,15 +1,18 @@
-from flask_login import login_user
-from src.models.user import User
-from flask_socketio import emit
 from flask_login import current_user
-from src.models import db
+from flask_login import login_user
+from flask_socketio import emit
 from werkzeug.security import generate_password_hash, check_password_hash
-from src.helpers import generate_user_token, encode_user_token
-from src.schemas.user_schema import UserSchema
+
+from app import db
+from app import socketio
+from app.helpers import generate_user_token, encode_user_token
+from app.models.user import User
+from app.schemas.user_schema import UserSchema
 
 schema = UserSchema()
 
 
+@socketio.on('login')
 def login(attributes):
     attributes = attributes['user']
 
@@ -33,6 +36,7 @@ def login(attributes):
         emit('login_failed', {'error': 'User not authorized'})
 
 
+@socketio.on('registration')
 def registration(attributes):
     attributes = attributes['user']
     token = generate_user_token()
@@ -63,6 +67,7 @@ def registration(attributes):
         })
 
 
+@socketio.on('current_user')
 def get_current_user(attributes):
     user = current_user
 

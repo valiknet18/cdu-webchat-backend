@@ -1,8 +1,7 @@
-from flask_login import LoginManager
-from src.models.user import User
-from src.helpers import decode_user_token
+from app import login_manager
+from app.models.user import User
+from app.helpers import decode_user_token
 
-login_manager = LoginManager()
 
 @login_manager.request_loader
 def user_load(request):
@@ -17,6 +16,7 @@ def user_load(request):
     token = decode_user_token(token).decode('ascii')
 
     return User.query.filter_by(token=token).first()
+
 
 @login_manager.user_loader
 def get_sess_user(user_id):

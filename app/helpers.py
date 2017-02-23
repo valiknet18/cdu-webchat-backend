@@ -1,4 +1,5 @@
 from base64 import b64encode, b64decode
+
 import random
 
 secret_key = '85vyS5SL1KgNBAZ378W0MZaWxjr842sA'
