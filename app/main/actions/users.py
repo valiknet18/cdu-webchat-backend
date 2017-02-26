@@ -1,10 +1,9 @@
-from flask_login import current_user
-from flask_login import login_user
-from flask_socketio import emit
+from flask_login import current_user, login_user
+from flask_socketio import emit, join_room
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import db
-from app import socketio
+from app import db, socketio
 from app.helpers import generate_user_token, encode_user_token
 from app.models.user import User
 from app.schemas.user_schema import UserSchema
@@ -70,6 +69,9 @@ def registration(attributes):
 @socketio.on('current_user')
 def get_current_user(attributes):
     user = current_user
+
+    for room in user.rooms:
+        join_room(room.id)
 
     if not user.is_authenticated:
         emit('failed', {'error': 'User not authorized'})

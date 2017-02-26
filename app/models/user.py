@@ -1,5 +1,6 @@
 from app import db
 from app.models.room import Room
+from app.models.message import Message
 
 from flask_login import UserMixin
 
@@ -21,5 +22,7 @@ class User(db.Model, UserMixin):
     role = db.Column(db.Enum('teacher', 'student'))
     is_active = db.Column(db.BOOLEAN(), default=True)
     token = db.Column(db.VARCHAR(255), nullable=True)
+    last_selected_room = db.Column(db.Integer(), db.ForeignKey('rooms.id'), nullable=True)
+    messages = db.relationship('Message', backref='author', lazy='dynamic')
     rooms = db.relationship('Room', secondary=user_room,
-                                backref=db.backref('users', lazy='dynamic'))
+                                backref=db.backref('members', lazy='dynamic'))

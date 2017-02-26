@@ -1,8 +1,12 @@
 from app import ma
-from app.models.user import User
+from app.schemas.room_schema import RoomSchema
 
 
-class UserSchema(ma.ModelSchema):
+class UserSchema(ma.Schema):
     class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'email', 'username', 'role', 'is_super_admin',)
+        fields = ('first_name', 'last_name',
+                  'email', 'username',
+                  'role', 'is_super_admin',
+                  'rooms', 'last_selected_room')
+
+    rooms = ma.Nested(RoomSchema, many=True)

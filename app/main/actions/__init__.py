@@ -1,7 +1,6 @@
 from app import login_manager
-from app.models.user import User
 from app.helpers import decode_user_token
-
+from app.models.user import User
 
 @login_manager.request_loader
 def user_load(request):
