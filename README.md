@@ -1,7 +1,7 @@
 ##CDU Webchat Server
 
 ###TODO
-1. Test new directory structure
+1. Fix problem with message timezone
 
 ###For run
 1. Init and activate virtualenv
