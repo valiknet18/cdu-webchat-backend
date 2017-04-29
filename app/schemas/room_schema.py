@@ -4,7 +4,7 @@ from app.schemas.message_schema import MessageSchema, UserSchemaWithoutRooms
 
 class RoomSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'created_by', 'name', 'created_at',)
+        fields = ('id', 'created_by', 'name',)
 
 
 class RoomSchemaWithMessages(ma.Schema):

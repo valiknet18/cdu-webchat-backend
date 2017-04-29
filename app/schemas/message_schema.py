@@ -8,6 +8,7 @@ class UserSchemaWithoutRooms(ma.Schema):
 
 class MessageSchema(ma.ModelSchema):
     class Meta:
-        fields = ('message', 'created_at', 'author')
+        fields = ('msg', 'author', 'created_at')
 
+    created_at = ma.Date()
     author = ma.Nested(UserSchemaWithoutRooms)

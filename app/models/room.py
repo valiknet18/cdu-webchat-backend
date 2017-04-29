@@ -1,6 +1,6 @@
 from app import db
 from app.models.message import Message
-# from app.models.user import User, user_room
+from app.models.user import user_room, User
 
 
 class Room(db.Model):
@@ -10,3 +10,4 @@ class Room(db.Model):
     name = db.Column(db.VARCHAR(255))
     created_at = db.Column(db.DateTime)
     messages = db.relationship('Message', backref='room', lazy='dynamic')
+    members = db.relationship('User', secondary=user_room, back_populates='rooms')

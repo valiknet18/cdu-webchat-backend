@@ -82,3 +82,12 @@ def get_current_user(attributes):
 
 def _get_user(attributes):
     return User.query.filter(User.email == attributes['email']).first()
+
+
+@socketio.on('get_users')
+def get_users(attributes):
+    users = User.query.all()
+
+    emit('receive_users', {
+        'users': schema.dump(users, many=True).data
+    })

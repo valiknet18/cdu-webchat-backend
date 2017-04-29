@@ -1,16 +1,17 @@
 from sqlalchemy import subquery
 
-from app.models.room import Room
 from app.models.message import Message
 from app.models import room, message
 from app import db
 from datetime import datetime
 
-from flask_socketio import emit
+from flask_socketio import emit, join_room
 from flask_login import current_user
 
+from app.models.user import User
 from app.schemas.room_schema import RoomSchema, RoomSchemaWithMessages
 from app import socketio
+from app.models.room import Room
 
 schema = RoomSchema()
 schema_with_messages = RoomSchemaWithMessages()
@@ -20,13 +21,13 @@ schema_with_messages = RoomSchemaWithMessages()
 def join_to_room(attributes):
     room_id = attributes['id']
 
+    room = Room.query.get(room_id)
+
     user = current_user
-    user.rooms.append(room_id)
+    user.rooms.append(room)
     user.last_selected_room = room_id
 
     db.session.commit()
-
-    room = Room.query.get(room_id)
 
     emit('successful_joined_to_room', {
         'room': schema_with_messages.dump(room).data
@@ -55,6 +56,8 @@ def select_room(attributes):
     user.last_selected_room = room_id
     db.session.commit()
 
+    join_room(room_id)
+
     emit('successful_selected_room', {
         'room': schema_with_messages.dump(room).data
     })
@@ -69,11 +72,11 @@ def get_last_room_messages(attributes):
 @socketio.on('send_message_to_room')
 def send_room_messages(attributes):
     room_id = attributes['id']
-    messageContent = attributes['message']
+    message_content = attributes['message']
     user = current_user
 
     message = Message(
-        message=messageContent,
+        msg=message_content,
         created_at=datetime.now(),
         author_id=user.id,
         room_id=room_id
@@ -111,3 +114,30 @@ def create_room(attributes):
         emit('failed room creating', {
             'error': str(e)
         })
+
+
+@socketio.on('get_rooms')
+def get_rooms(attributes):
+    rooms = Room.query.all()
+
+    emit('receive_rooms', {
+        'rooms': schema.dump(rooms, many=True).data
+    })
+
+
+@socketio.on('search_rooms')
+def search_rooms(attributes):
+    pass
+
+
+@socketio.on('invite_users')
+def invite_users(attributes):
+    users = []
+
+    for user_id in attributes['users']:
+        users.append(User.query.get(user_id))
+
+    room = Room.query.get(attributes['room'])
+    room.members = users
+
+    db.session.commit()

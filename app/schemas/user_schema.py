@@ -7,6 +7,6 @@ class UserSchema(ma.Schema):
         fields = ('first_name', 'last_name',
                   'email', 'username',
                   'role', 'is_super_admin',
-                  'rooms', 'last_selected_room')
+                  'rooms', 'last_selected_room', 'id')
 
     rooms = ma.Nested(RoomSchema, many=True)
