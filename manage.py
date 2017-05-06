@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.models import user, room, message
+from app.models import user, room, message, event, file
 
 from flask_script import Manager, Shell
 from flask_migrate import MigrateCommand, Migrate

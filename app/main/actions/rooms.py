@@ -1,5 +1,3 @@
-from sqlalchemy import subquery
-
 from app.models.message import Message
 from app.models import room, message
 from app import db
@@ -8,7 +6,7 @@ from datetime import datetime
 from flask_socketio import emit, join_room
 from flask_login import current_user
 
-from app.models.user import User
+from app.models.user import User, Group
 from app.schemas.room_schema import RoomSchema, RoomSchemaWithMessages
 from app import socketio
 from app.models.room import Room
@@ -99,8 +97,7 @@ def create_room(attributes):
 
     room = Room(
         name=attributes['name'],
-        created_by=user.id,
-        created_at=datetime.now()
+        role=Room.SIMPLE
     )
 
     try:
@@ -125,19 +122,14 @@ def get_rooms(attributes):
     })
 
 
-@socketio.on('search_rooms')
-def search_rooms(attributes):
-    pass
+@socketio.on('invite_groups')
+def invite_groups(attributes):
+    groups = []
 
+    for group_id in attributes['groups']:
+        groups.append(Group.query.get(group_id))
 
-@socketio.on('invite_users')
-def invite_users(attributes):
-    users = []
-
-    for user_id in attributes['users']:
-        users.append(User.query.get(user_id))
-
-    room = Room.query.get(attributes['room'])
-    room.members = users
+    room = Room.query.get(attributes['room_id'])
+    room.groups = groups
 
     db.session.commit()

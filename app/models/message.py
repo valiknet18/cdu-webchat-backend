@@ -1,4 +1,5 @@
 from app import db
+from app.models.file import File
 
 
 class Message(db.Model):
@@ -8,4 +9,4 @@ class Message(db.Model):
     created_at = db.Column(db.DateTime)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
-    # attachments = db.relationship('File', backref='message', lazy='dynamic')
+    file_id = db.Column(db.Integer, db.ForeignKey('files.id'))

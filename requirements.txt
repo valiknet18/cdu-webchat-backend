@@ -1,5 +1,5 @@
 alembic==0.8.10
-appdirs==1.4.0
+appdirs==1.4.3
 click==6.7
 enum-compat==0.0.2
 eventlet==0.20.1
@@ -18,11 +18,15 @@ MarkupSafe==0.23
 marshmallow==2.12.2
 marshmallow-sqlalchemy==0.12.1
 packaging==16.8
+prompt-toolkit==1.0.14
+Pygments==2.2.0
 PyMySQL==0.7.10
 pyparsing==2.1.10
 python-editor==1.0.3
 python-engineio==1.2.2
 python-socketio==1.7.1
+role==0.0.3
 six==1.10.0
 SQLAlchemy==1.1.5
+wcwidth==0.1.7
 Werkzeug==0.11.15

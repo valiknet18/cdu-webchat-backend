@@ -6,4 +6,3 @@ class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.VARCHAR(255))
     path = db.Column(db.VARCHAR(255))
-    message_id = db.Column(db.Integer, db.ForeignKey('messages.id'))

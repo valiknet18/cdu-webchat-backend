@@ -19,6 +19,8 @@ def create_app():
     config = Config
     app.config.from_object(config)
 
+    print(config.SQLALCHEMY_DATABASE_URI)
+
     config.init_app(app)
     socketio.init_app(app)
     db.init_app(app)

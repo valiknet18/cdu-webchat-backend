@@ -5,7 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, socketio
 from app.helpers import generate_user_token, encode_user_token
-from app.models.user import User
+from app.models.user import User, Group
+from app.schemas.group_schema import SimpleGroupSchema
 from app.schemas.user_schema import UserSchema
 
 schema = UserSchema()
@@ -45,8 +46,8 @@ def registration(attributes):
         last_name=attributes['last_name'],
         email=attributes['email'],
         username=attributes['username'],
-        password=generate_password_hash(attributes['password']),
-        role='student',
+        plain_password=attributes['password'],
+        role=User.STUDENT,
         token=token
     )
 
@@ -70,8 +71,9 @@ def registration(attributes):
 def get_current_user(attributes):
     user = current_user
 
-    for room in user.rooms:
-        join_room(room.id)
+    if user.group and len(user.group.rooms) > 0:
+        for room in user.group.rooms:
+            join_room(room.id)
 
     if not user.is_authenticated:
         emit('failed', {'error': 'User not authorized'})
@@ -90,4 +92,14 @@ def get_users(attributes):
 
     emit('receive_users', {
         'users': schema.dump(users, many=True).data
+    })
+
+
+@socketio.on('get_groups')
+def get_groups(attributes):
+    groups = Group.query.all()
+    groups_schema = SimpleGroupSchema()
+
+    emit('receive_groups', {
+        'groups': groups_schema.dump(groups, many=True).data
     })
