@@ -115,7 +115,7 @@ def create_room(attributes):
             'room': schema.dump(room).data
         })
 
-	_get_rooms()
+        _get_rooms()
     except Exception as e:
         emit('failed room creating', {
             'error': str(e)
