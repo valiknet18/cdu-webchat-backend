@@ -9,7 +9,7 @@ class RoomSchema(ma.Schema):
 
 class UserSchemaForRooms(ma.Schema):
     class Meta:
-        fields = ('first_name', 'last_name', 'id')
+        fields = ('first_name', 'last_name', 'id', 'role')
 
 
 class GroupSchemaWithStudents(ma.Schema):
@@ -21,7 +21,8 @@ class GroupSchemaWithStudents(ma.Schema):
 
 class RoomSchemaWithMessages(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'messages', 'groups')
+        fields = ('id', 'name', 'messages', 'groups', 'teacher')
 
     messages = ma.Nested(MessageSchema, many=True)
     groups = ma.Nested(GroupSchemaWithStudents, many=True)
+    teacher = ma.Nested(UserSchemaForRooms)

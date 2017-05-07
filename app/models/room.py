@@ -14,3 +14,6 @@ class Room(db.Model):
     role = db.Column(db.VARCHAR(100))
     messages = db.relationship('Message', backref='room', lazy='dynamic')
     groups = db.relationship('Group', secondary=group_room, back_populates='rooms')
+    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    teacher = db.relationship('User', foreign_keys=[teacher_id])
+

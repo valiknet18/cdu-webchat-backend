@@ -14,6 +14,12 @@ from app.models.room import Room
 schema = RoomSchema()
 schema_with_messages = RoomSchemaWithMessages()
 
+def _get_rooms():
+    rooms = Room.query.all()
+
+    emit('receive_rooms', {
+        'rooms': schema.dump(rooms, many=True).data
+    })
 
 @socketio.on('join_to_room')
 def join_to_room(attributes):
@@ -97,7 +103,8 @@ def create_room(attributes):
 
     room = Room(
         name=attributes['name'],
-        role=Room.SIMPLE
+        role=Room.SIMPLE,
+        teacher=user
     )
 
     try:
@@ -107,6 +114,8 @@ def create_room(attributes):
         emit('successful room creating', {
             'room': schema.dump(room).data
         })
+
+	_get_rooms()
     except Exception as e:
         emit('failed room creating', {
             'error': str(e)
@@ -115,11 +124,7 @@ def create_room(attributes):
 
 @socketio.on('get_rooms')
 def get_rooms(attributes):
-    rooms = Room.query.all()
-
-    emit('receive_rooms', {
-        'rooms': schema.dump(rooms, many=True).data
-    })
+    _get_rooms()
 
 
 @socketio.on('invite_groups')

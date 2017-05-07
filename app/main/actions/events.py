@@ -26,7 +26,8 @@ def create_event(attributes):
 
     room = Room(
         name=attributes['name'],
-        created_by=current_user
+        created_by=current_user,
+        teacher=current_user
     )
 
     event = Event(
@@ -35,6 +36,15 @@ def create_event(attributes):
         room=room,
         start_at=attributes['start_at']
     )
+
+    groups = []
+
+    for group_id in attributes['groups']:
+        groups.append(
+            Group.query.get(group_id)
+        )
+
+    room.groups = groups
 
     db.session.add(room)
     db.session.add(event)
@@ -48,13 +58,7 @@ def edit_event(attributes):
     event.name = attributes['name']
     event.start_at = attributes['start_at']
 
-    db.session.commit()
-
-
-@socketio.on('assign_groups_to_event')
-def assign_groups(attributes):
-    event = Event.query.get(attributes['event_id'])
-    room = event.room
+    event.room.name = attributes['name']
 
     groups = []
 
@@ -63,6 +67,6 @@ def assign_groups(attributes):
             Group.query.get(group_id)
         )
 
-    room.groups = groups
+    event.room.groups = groups
 
     db.session.commit()
