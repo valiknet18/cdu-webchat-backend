@@ -12,10 +12,10 @@ event_schema = AdminEventSchema()
 
 
 @socketio.on('admin_get_events')
-def get_events():
+def get_events(attributes):
     events = Event.query.filter(Event.start_at >= datetime.now()).all()
 
     emit('admin_receive_events', {
-        'events': event_schema.dump(events).data
+        'events': event_schema.dump(events, many=True).data
     })
 

@@ -6,19 +6,21 @@ from app.schemas.admin.admin_group_schema import AdminGroupSchema
 
 group_schema = AdminGroupSchema()
 
-
-@socketio.on('admin_get_groups')
-def get_groups(attributes):
+def _get_groups():
     groups = Group.query.all()
 
     emit('admin_receive_groups', {
         'groups': group_schema.dump(groups, many=True).data
     })
 
+@socketio.on('admin_get_groups')
+def get_groups(attributes):
+    _get_groups()
+
 
 @socketio.on('admin_get_group')
 def get_group(attributes):
-    group = Group.query.get()
+    group = Group.query.get(attributes['id'])
 
     emit('admin_receive_group', {
         'group': group_schema.dump(group).data
@@ -50,3 +52,5 @@ def delete_group(attributes):
 
     db.session.delete(group)
     db.session.commit()
+
+    _get_groups()
