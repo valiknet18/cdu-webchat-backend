@@ -2,4 +2,4 @@ from flask import Blueprint
 
 main = Blueprint('main', __name__)
 
-from app.main.actions import users, rooms
+from app.main.actions import users, rooms, events

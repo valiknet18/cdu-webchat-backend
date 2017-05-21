@@ -103,3 +103,18 @@ def get_groups(attributes):
     emit('receive_groups', {
         'groups': groups_schema.dump(groups, many=True).data
     })
+
+
+@socketio.on('update_profile')
+def update_user(attributes):
+    user = current_user
+
+    user.first_name = attributes['first_name']
+    user.last_name = attributes['last_name']
+    user.email = attributes['email']
+    user.username = attributes['username']
+
+    if 'password' in attributes:
+        user.plain_password = attributes['password']
+
+    db.session.commit()

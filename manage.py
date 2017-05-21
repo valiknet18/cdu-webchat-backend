@@ -7,7 +7,7 @@ from flask_migrate import MigrateCommand, Migrate
 app = create_app()
 
 def _make_context():
-    return dict(app=app, db=db, user=user, room=room, message=message)
+    return dict(app=app, db=db, user=user, room=room, message=message, event=event)
 
 migrate = Migrate(app, db)
 manager = Manager(app)

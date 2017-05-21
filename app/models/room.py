@@ -16,4 +16,3 @@ class Room(db.Model):
     groups = db.relationship('Group', secondary=group_room, back_populates='rooms')
     teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     teacher = db.relationship('User', foreign_keys=[teacher_id])
-
