@@ -9,8 +9,8 @@ from app.models.room import Room
 from app.models.user import Group
 from app.schemas.event_schema import EventSchema
 
-
 schema = EventSchema()
+
 DATETIME_FORMAT = '%m/%d/%Y, %H:%M %p'
 
 

@@ -4,6 +4,8 @@ from app.models.file import File
 
 class Message(db.Model):
     __tablename__ = 'messages'
+    mysql_character_set = 'utf8'
+
     id = db.Column(db.Integer, primary_key=True)
     msg = db.Column(db.UnicodeText)
     created_at = db.Column(db.DateTime)

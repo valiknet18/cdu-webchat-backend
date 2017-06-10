@@ -8,6 +8,7 @@ class Room(db.Model):
     SIMPLE = 'simple'
 
     __tablename__ = 'rooms'
+    mysql_character_set = 'utf8'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(255))

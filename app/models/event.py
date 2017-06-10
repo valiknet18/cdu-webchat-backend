@@ -7,6 +7,8 @@ from app.models.room import Room
 
 class Event(db.Model):
     __tablename__ = 'events'
+    mysql_character_set = 'utf8'
+
     id = db.Column(db.Integer, primary_key=True)
     start_at = db.Column(db.DateTime)
     name = db.Column(db.VARCHAR(150))

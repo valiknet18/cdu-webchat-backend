@@ -19,6 +19,8 @@ class User(db.Model, UserMixin):
     TEACHER = 'teacher'
 
     __tablename__ = 'users'
+    mysql_character_set = 'utf8'
+
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.VARCHAR(150))
     last_name = db.Column(db.VARCHAR(150))

@@ -10,9 +10,11 @@ from app.models.user import User, Group
 from app.schemas.room_schema import RoomSchema, RoomSchemaWithMessages
 from app import socketio
 from app.models.room import Room
+from app.main.actions.users import _get_user_rooms
 
 schema = RoomSchema()
 schema_with_messages = RoomSchemaWithMessages()
+
 
 def _get_rooms():
     rooms = Room.query.all()
@@ -20,6 +22,7 @@ def _get_rooms():
     emit('receive_rooms', {
         'rooms': schema.dump(rooms, many=True).data
     })
+
 
 @socketio.on('join_to_room')
 def join_to_room(attributes):
@@ -115,7 +118,7 @@ def create_room(attributes):
             'room': schema.dump(room).data
         })
 
-        _get_rooms()
+        _get_user_rooms()
     except Exception as e:
         emit('failed room creating', {
             'error': str(e)

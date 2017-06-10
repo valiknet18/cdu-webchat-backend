@@ -5,11 +5,27 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, socketio
 from app.helpers import generate_user_token, encode_user_token
+from app.models.room import Room
 from app.models.user import User, Group
 from app.schemas.group_schema import SimpleGroupSchema
+from app.schemas.room_schema import RoomSchema
 from app.schemas.user_schema import UserSchema
 
 schema = UserSchema()
+room_schema = RoomSchema()
+
+
+def _get_user_rooms():
+    user = current_user
+
+    if user.role == User.TEACHER:
+        rooms = Room.query.filter(Room.teacher_id == user.id).all()
+    else:
+        rooms = Room.query.filter(Room.groups.any(id=user.group_id)).all()
+
+    emit('receive_user_rooms', {
+        'rooms': room_schema.dump(rooms, many=True).data
+    })
 
 
 @socketio.on('login')
@@ -118,3 +134,8 @@ def update_user(attributes):
         user.plain_password = attributes['password']
 
     db.session.commit()
+
+
+@socketio.on('get_user_rooms')
+def get_user_rooms(attributes):
+    _get_user_rooms()
