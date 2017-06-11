@@ -11,7 +11,7 @@ from app.schemas.event_schema import EventSchema
 
 schema = EventSchema()
 
-DATETIME_FORMAT = '%m/%d/%Y, %H:%M %p'
+DATETIME_FORMAT = '%d/%m/%Y, %H:%M'
 UTC_OFFSET = 3
 
 
@@ -29,6 +29,7 @@ def _get_events():
             room_ids.append(room.id)
 
         if len(room_ids) > 0:
+	    print(datetime.utcnow())
             events = Event.query.filter(Event.room_id.in_(room_ids)).filter(Event.start_at >= datetime.utcnow()).all()
 
     emit('receive_events', {
@@ -85,7 +86,9 @@ def create_event(attributes):
 
 @socketio.on('edit_event')
 def edit_event(attributes):
+    print(attributes['start_at'])
     start_at = datetime.strptime(attributes['start_at'], DATETIME_FORMAT) - timedelta(hours=UTC_OFFSET)
+    print(start_at)
 
     event = Event.query.get(attributes['id'])
 
