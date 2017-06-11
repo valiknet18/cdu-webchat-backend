@@ -29,7 +29,7 @@ def _get_events():
             room_ids.append(room.id)
 
         if len(room_ids) > 0:
-            events = Event.query.filter(Event.room_id.in_(room_ids)).filter(Event.start_at >= datetime.now()).all()
+            events = Event.query.filter(Event.room_id.in_(room_ids)).filter(Event.start_at >= datetime.utcnow()).all()
 
     emit('receive_events', {
         'events': schema.dump(events, many=True).data
