@@ -16,6 +16,19 @@ schema = RoomSchema()
 schema_with_messages = RoomSchemaWithMessages()
 
 
+def _get_room(room_id):
+    user = current_user
+
+    room = Room.query.get(room_id)
+    user.last_selected_room = room_id
+    db.session.commit()
+
+    join_room(room_id)
+
+    emit('successful_selected_room', {
+        'room': schema_with_messages.dump(room).data
+    })
+
 def _get_rooms():
     rooms = Room.query.all()
 
@@ -56,18 +69,7 @@ def leave_from_room(attributes):
 
 @socketio.on('select_room')
 def select_room(attributes):
-    room_id = attributes['id']
-    user = current_user
-
-    room = Room.query.get(room_id)
-    user.last_selected_room = room_id
-    db.session.commit()
-
-    join_room(room_id)
-
-    emit('successful_selected_room', {
-        'room': schema_with_messages.dump(room).data
-    })
+    _get_room(attributes['id'])
 
 
 @socketio.on('get_room_messages')
@@ -141,3 +143,5 @@ def invite_groups(attributes):
     room.groups = groups
 
     db.session.commit()
+
+    _get_room(attributes['room_id'])
