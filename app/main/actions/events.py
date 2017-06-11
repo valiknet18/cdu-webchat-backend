@@ -29,7 +29,6 @@ def _get_events():
             room_ids.append(room.id)
 
         if len(room_ids) > 0:
-	    print(datetime.utcnow())
             events = Event.query.filter(Event.room_id.in_(room_ids)).filter(Event.start_at >= datetime.utcnow()).all()
 
     emit('receive_events', {
