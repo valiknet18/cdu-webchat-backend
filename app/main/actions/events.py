@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask_socketio import emit
 from flask_login import current_user
@@ -12,6 +12,7 @@ from app.schemas.event_schema import EventSchema
 schema = EventSchema()
 
 DATETIME_FORMAT = '%m/%d/%Y, %H:%M %p'
+UTC_OFFSET = 3
 
 
 def _get_events():
@@ -51,7 +52,7 @@ def get_event(attributes):
 
 @socketio.on('create_event')
 def create_event(attributes):
-    start_at = datetime.strptime(attributes['start_at'], DATETIME_FORMAT)
+    start_at = datetime.strptime(attributes['start_at'], DATETIME_FORMAT) - timedelta(hours=UTC_OFFSET)
 
     room = Room(
         name=attributes['name'],
@@ -84,7 +85,7 @@ def create_event(attributes):
 
 @socketio.on('edit_event')
 def edit_event(attributes):
-    start_at = datetime.strptime(attributes['start_at'], DATETIME_FORMAT)
+    start_at = datetime.strptime(attributes['start_at'], DATETIME_FORMAT) - timedelta(hours=UTC_OFFSET)
 
     event = Event.query.get(attributes['id'])
 

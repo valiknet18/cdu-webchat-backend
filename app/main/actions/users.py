@@ -14,7 +14,6 @@ from app.schemas.user_schema import UserSchema
 schema = UserSchema()
 room_schema = RoomSchema()
 
-
 def _get_user_rooms():
     user = current_user
 

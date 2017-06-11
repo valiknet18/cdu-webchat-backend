@@ -14,6 +14,7 @@ from app.main.actions.users import _get_user_rooms
 
 schema = RoomSchema()
 schema_with_messages = RoomSchemaWithMessages()
+UTC_OFFSET = 3
 
 
 def _get_room(room_id):
@@ -86,7 +87,7 @@ def send_room_messages(attributes):
 
     message = Message(
         msg=message_content,
-        created_at=datetime.now(),
+        created_at=datetime.utcnow(),
         author_id=user.id,
         room_id=room_id
     )
