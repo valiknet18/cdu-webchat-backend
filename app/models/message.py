@@ -18,6 +18,9 @@ class Message(db.Model):
 
     @property
     def photos(self):
+        if self.images is None:
+            return []
+
         return json.loads(self.images)
 
     @photos.setter
