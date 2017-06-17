@@ -1,3 +1,5 @@
+import json
+
 from app import db
 from app.models.file import File
 
@@ -12,3 +14,12 @@ class Message(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
     file_id = db.Column(db.Integer, db.ForeignKey('files.id'))
+    images = db.Column(db.UnicodeText())
+
+    @property
+    def photos(self):
+        return json.loads(self.images)
+
+    @photos.setter
+    def photos(self, photos):
+        self.images = json.dumps(photos)

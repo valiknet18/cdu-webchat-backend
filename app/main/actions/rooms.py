@@ -1,3 +1,5 @@
+import json
+
 from app.models.message import Message
 from app.models import room, message
 from app import db
@@ -89,7 +91,8 @@ def send_room_messages(attributes):
         msg=message_content,
         created_at=datetime.utcnow(),
         author_id=user.id,
-        room_id=room_id
+        room_id=room_id,
+        photos=json.dumps(attributes['images'])
     )
 
     db.session.add(message)
